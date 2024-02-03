@@ -1,0 +1,28 @@
+﻿@model MyBlog.Models.LoginViewModel;
+
+@{
+    ViewData["Title"] = "Авторизация";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Войти</h1>
+</div>
+<div class="register-form">
+    <form method="post">
+        <input type="hidden" name="u" value="@Model.U" />
+        <p>
+            <label>Email</label>
+            <input class="form-input" type="text" name="email" value="@Model.Email" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Email)</div>
+        </p>
+        <p>
+            <label>Пароль</label>
+            <input class="form-input" type="password" name="Password" value="" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Password)</div>
+        </p>
+        <p>
+            <input type="checkbox" name="RememberMe" value="true" /> Запомни меня
+        </p>
+        <button>Войти</button>
+    </form>
+</div>

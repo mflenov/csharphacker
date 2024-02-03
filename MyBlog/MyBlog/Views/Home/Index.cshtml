@@ -1,0 +1,41 @@
+﻿@model HomeViewModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">
+        @if (Model.IsLoggedIn)
+        {
+            <p>Вы авторизованы</p>
+        }
+        else
+        {
+            <p>Мы о вас ничего не знаем</p>
+        }
+    </h1>
+</div>
+
+
+@if (Model.IsLoggedIn)
+{
+    <ul>
+        <li><a href="/blog/add">Добавить запись на блог</a></li>
+    </ul>
+
+}
+
+<hr/>
+@foreach (var item in Model.BlogItems!)
+{
+    <div>
+        <h3>@item.Title</h3>
+        <p>@Html.FormantContent(item.Content!)</p>
+        @if (!String.IsNullOrEmpty(item.ImageFile))
+        {
+            <img src="@item.ImageFile"/>
+        }
+        <hr/>
+    </div>
+}

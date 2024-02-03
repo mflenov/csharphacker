@@ -1,0 +1,39 @@
+﻿@model MyBlog.Models.RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Регистрация</h1>
+</div>
+<div class="register-form">
+    <form method="post">
+        <p>
+            <label>Email</label>
+            <input class="form-input" type="text" name="email" value="@Model.Email" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Email)</div>
+        </p>
+        <p>
+            <label>Пароль</label>
+            <input class="form-input" type="password" name="Password" value="" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Password)</div>
+            <span class="hint">
+                Пароль должен:<br />
+                - Минимум 10 символов<br />
+                - Хотя бы одна маленькая буква<br />
+                - Хотя бы одна большая буква<br />
+                - Хотя бы один символ из !&amp;#$%^&*-<br />
+            </span>
+        </p>
+
+        <span><div class="g-recaptcha" data-sitekey="@ViewBag.CaptchaSitekey"></div></span>
+        <div class="error">@Html.ValidationMessage("captcha")</div>
+        <button>Зарегистрироваться</button>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+}

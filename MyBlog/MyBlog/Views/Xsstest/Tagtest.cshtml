@@ -1,0 +1,15 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<label>Безопасная версия</label>
+<input type="text" name="title" value="@Model" />
+
+<hr />
+<label>Опасная версия</label>
+<input type="text" name="title" value="@Html.Raw(Model)" />
+
+<hr />
+<label>Версия 3</label>
+<input type="text" name="title" value="" @Model />

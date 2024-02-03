@@ -1,0 +1,29 @@
+﻿@model BlogViewModel
+
+@{
+    ViewData["Title"] = "Запись на блоге";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Заметка на блоге</h1>
+</div>
+<div class="register-form">
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" userid="@Model.Title" />
+        <p>
+            <label>Заголовок</label>
+            <input class="form-input" type="text" name="title" value="@Model.Title" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Title)</div>
+        </p>
+        <p>
+            <label>Текст</label>
+            <textarea class="form-input" style="height:300px" name="content">@Model.Content</textarea>
+            <div class="error">@Html.ValidationMessageFor(m => m.Content)</div>
+        </p>
+        <p>
+            <label>Файл</label>
+            <input class="form-input" type="file" name="image" />
+        </p>
+        <button>Добавить</button>
+    </form>
+</div>
