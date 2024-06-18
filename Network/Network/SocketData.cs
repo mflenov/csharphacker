@@ -6,7 +6,7 @@ namespace Network
     class SocketData
     {
         public const int BufferSize = 1024;
-        public Socket ClientConnection { get; set; }
+        public Socket? ClientConnection { get; set; }
 
         byte[] buffer = new byte[BufferSize];
 
