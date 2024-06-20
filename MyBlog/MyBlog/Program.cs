@@ -27,12 +27,14 @@ builder.Services.AddSingleton<IFailedAttemptDAL, FailedAttemptDAL>();
 builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
 builder.Services.AddSingleton<IBlog, Blog>();
 builder.Services.AddSingleton<MyBlog.BL.Auth.ISession, MyBlog.BL.Auth.Session>();
+builder.Services.AddSingleton<MyBlog.BL.Auth.IWebCookie, MyBlog.Service.WebCookie>();
 
 builder.Services.AddSingleton<ISessionDAL, SessionDAL>();
 builder.Services.AddSingleton<IEmailQueueDAL, EmailQueueDAL>();
 builder.Services.AddSingleton<IAuthenticationDAL, AdoAuthenticationDAL>();
 builder.Services.AddSingleton<IUserSecurityDAL, UserSecurityDAL>();
 builder.Services.AddSingleton<IBlogDAL, BlogDAL>();
+builder.Services.AddSingleton<IUserTokenDAL, UserTokenDAL>();
 
 
 builder.Services.AddResponseCaching();
@@ -61,6 +63,7 @@ builder.Services.AddMvc()
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 
+/*
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
@@ -79,8 +82,8 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter("fixed",
     rateLimiter => {
         rateLimiter.Window = TimeSpan.FromSeconds(12);
-        rateLimiter.PermitLimit = 4;
-        rateLimiter.QueueLimit = 2;
+        rateLimiter.PermitLimit = 400;
+        rateLimiter.QueueLimit = 200;
         rateLimiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     })
 );
@@ -88,10 +91,11 @@ builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter("fixed",
 builder.Services.AddRateLimiter(_ => _.AddSlidingWindowLimiter("sliding",
     rateLimiter => {
         rateLimiter.Window = TimeSpan.FromSeconds(12);
-        rateLimiter.PermitLimit = 4;
-        rateLimiter.SegmentsPerWindow = 4;
+        rateLimiter.PermitLimit = 100;
+        rateLimiter.SegmentsPerWindow = 100;
     })
 );
+*/
 
 builder.Services.AddDataProtection();
 
@@ -112,7 +116,7 @@ app.UseSession();
 app.UseRouting();
 app.UseAuthorization();
 
-app.UseRateLimiter();
+//app.UseRateLimiter();
 app.MapDefaultControllerRoute();
 
 app.Run();

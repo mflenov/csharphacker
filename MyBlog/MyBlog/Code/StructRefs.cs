@@ -1,5 +1,4 @@
-﻿using System;
-namespace MyBlog.Code
+﻿namespace MyBlog.Code
 {
 	public struct MyPoint
 	{

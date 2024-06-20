@@ -4,7 +4,7 @@ namespace MyBlog.BL.Auth
 {
     public interface ICurrentUser
     {
-        bool IsLoggedIn();
+        Task<bool> IsLoggedIn();
 
         Task<UserModel> GetUserData();
     }

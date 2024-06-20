@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.Models;
 using MyBlog.BL.Blog;
-using Microsoft.Extensions.DependencyInjection;
 using MyBlog.BL.Auth;
-using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 using MyBlog.Middleware;
 
@@ -27,9 +22,10 @@ namespace MyBlog.Controllers
 
         [HttpGet]
         [Route("/blog/add")]
-        public IActionResult AddAction()
+        public async Task<IActionResult> AddAction()
         {
-            if (currentUser.IsLoggedIn() == false)
+            bool isLoggedIn = await currentUser.IsLoggedIn();
+            if (isLoggedIn == false)
                 return Redirect("/Login");
             return View("Edit", new BlogViewModel());
         }

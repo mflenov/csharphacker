@@ -1,6 +1,4 @@
-﻿using System;
-using MyBlog.BL.Auth;
-using MyBlog.DAL.Models;
+﻿using MyBlog.DAL.Models;
 
 namespace MyBlog.DAL.Interfaces
 {
