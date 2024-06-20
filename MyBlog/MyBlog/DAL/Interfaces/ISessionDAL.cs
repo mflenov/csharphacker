@@ -10,6 +10,10 @@ namespace MyBlog.DAL.Interfaces
         Task<int> UpdateSession(SessionModel model);
 
         Task<int> CreateSession(SessionModel model);
+
+        Task Extend(Guid dbSessionID);
+
+        Task Delete(Guid sessionId);
     }
 }
 

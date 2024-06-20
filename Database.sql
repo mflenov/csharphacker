@@ -110,3 +110,4 @@ if (not exists(select * from sys.tables where name = 'UserToken'))
 	    UserAgent varchar(1000) null
     );
 GO
+

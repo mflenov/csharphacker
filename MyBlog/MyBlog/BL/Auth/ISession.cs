@@ -12,6 +12,14 @@ namespace MyBlog.BL.Auth
         Task<int?> GetUserId();
 
         Task<bool> IsLoggedIn();
+
+        Task UpdateSessionData();
+        
+        void AddValue(string key, object value);
+
+        void RemoveValue(string key);
+
+        object GetValueDef(string key, object defaultValue);
     }
 }
 

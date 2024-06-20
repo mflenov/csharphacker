@@ -1,4 +1,5 @@
-﻿using MyBlog.DAL.Interfaces;
+﻿using Microsoft.VisualBasic;
+using MyBlog.DAL.Interfaces;
 using MyBlog.DAL.Models;
 
 namespace MyBlog.BL.Auth
@@ -110,7 +111,7 @@ namespace MyBlog.BL.Auth
                 */
             }
             return loggedIn;
-        }
+        }  
     }
 }
 
