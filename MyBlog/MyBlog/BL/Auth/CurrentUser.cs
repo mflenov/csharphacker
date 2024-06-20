@@ -70,11 +70,11 @@ namespace MyBlog.BL.Auth
 
         public async Task<bool> IsLoggedIn()
         {
-            bool loggedIn = this.httpContextAccessor?.HttpContext?.Session.GetInt32("userid") != null;
+            //bool loggedIn = this.httpContextAccessor?.HttpContext?.Session.GetInt32("userid") != null;
 
             // не используйте GetAwaiter().GetResult(), я использую это здесь только потому
             // что не хочу рефакторить код и оставить его так, как я его приводил во второй главе
-            //bool loggedIn = session.IsLoggedIn().GetAwaiter().GetResult();
+            bool loggedIn = await session.IsLoggedIn();
             if (!loggedIn) // Запомни меня
             {
                 // Это вариант с уникальными токенами
@@ -112,6 +112,27 @@ namespace MyBlog.BL.Auth
             }
             return loggedIn;
         }  
+
+		private Guid? GetCurrentUserToken() {
+			string? tokenCookie = webCookie.Get(General.Constants.RememberMeCookieName);
+			if (tokenCookie == null)
+				return null;
+			return General.Helpers.StringToGuidDef(tokenCookie ?? "");
+		}
+
+        public async Task Logout()
+		{
+			await session.DeleteSessionId();
+
+			Guid? tokenGuid = GetCurrentUserToken();
+			if (tokenGuid != null){
+				await userTokenDAL.DeleteToken((Guid)tokenGuid);
+				webCookie.Delete(General.Constants.RememberMeCookieName);
+			}
+
+            webCookie.Delete(General.Constants.SessionCookieName);
+            session.ResetSessionCache();
+        }    
     }
 }
 

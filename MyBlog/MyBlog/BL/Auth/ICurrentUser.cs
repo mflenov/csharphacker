@@ -7,6 +7,8 @@ namespace MyBlog.BL.Auth
         Task<bool> IsLoggedIn();
 
         Task<UserModel> GetUserData();
+
+        Task Logout();
     }
 }
 

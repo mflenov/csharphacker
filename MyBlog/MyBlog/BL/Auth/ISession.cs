@@ -20,6 +20,10 @@ namespace MyBlog.BL.Auth
         void RemoveValue(string key);
 
         object GetValueDef(string key, object defaultValue);
+
+        void ResetSessionCache();
+
+        Task DeleteSessionId();
     }
 }
 

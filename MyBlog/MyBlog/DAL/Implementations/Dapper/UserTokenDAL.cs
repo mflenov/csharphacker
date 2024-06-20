@@ -26,4 +26,12 @@ public class UserTokenDAL : Interfaces.IUserTokenDAL
             return await connection.QueryFirstOrDefaultAsync<int?>(sql, new { tokenid = tokenid });
         }
     }
+    public async Task DeleteToken(Guid tokenid) {
+        using (var connection = new SqlConnection(DbHelper.GetConnectionString()))
+        {
+            string sql = @"delete from UserToken where UserTokenId = @tokenid";
+
+            await connection.ExecuteAsync(sql, new { tokenid = tokenid });
+        }
+    }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using MyBlog.DAL.Models;
+﻿using MyBlog.DAL.Models;
 using MyBlog.DAL.Interfaces;
 using System.Text.Json;
 
@@ -71,7 +69,7 @@ namespace MyBlog.BL.Auth
             if (data.Content != null) {
                 SessionData = JsonSerializer.Deserialize<Dictionary<string, object>>(data.Content) ?? new Dictionary<string, object>();
             }
-            await this.sessionDAL.Extend(data.DbSessionId);
+            await this.sessionDAL.Extend(data.SessionId);
             return data;
         }
 
@@ -132,6 +130,12 @@ namespace MyBlog.BL.Auth
             sessionModel = null;
         }
 
+        public async Task DeleteSessionId()
+        {
+            await GetSession();
+            if (this.sessionModel != null)
+                await sessionDAL.Delete((Guid)this.sessionModel.SessionId);
+        }
     }
 }
 

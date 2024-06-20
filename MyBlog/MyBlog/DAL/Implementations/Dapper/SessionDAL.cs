@@ -53,9 +53,9 @@ namespace MyBlog.DAL.Implementations.Dapper
         {
             using (var connection = new SqlConnection(DbHelper.GetConnectionString()))
             {
-                string sql = @"update DbSession
+                string sql = @"update [Session]
                         set LastAccessed = @lastAccessed
-                        where DbSessionID = @dbSessionID";
+                        where SessionID = @dbSessionID";
 
                 await connection.ExecuteAsync(sql, new { dbSessionID = dbSessionID, lastAccessed = DateTime.Now });
             }
@@ -65,7 +65,7 @@ namespace MyBlog.DAL.Implementations.Dapper
         {
             using (var connection = new SqlConnection(DbHelper.GetConnectionString()))
             {
-                string sql = @"delete from DbSession where DbSessionID = @dbSessionID";
+                string sql = @"delete from [Session] where SessionID = @dbSessionID";
 
                 await connection.ExecuteAsync(sql, new { dbSessionID = sessionId });
             }

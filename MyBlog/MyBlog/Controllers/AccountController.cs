@@ -46,6 +46,13 @@ namespace MyBlog.Controllers
             }
             return View("Password", model);
         }
+
+        [HttpGet]
+        [Route("/account/logout")]
+        public async Task<IActionResult> Logout() {
+            await currentUser.Logout();
+            return Redirect("/");
+        }
     }
 }
 
