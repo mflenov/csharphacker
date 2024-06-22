@@ -79,6 +79,7 @@ namespace MyBlog.BL.Auth
             data.UserId = userId;
             data.SessionId = Guid.NewGuid();
             CreateSessionCookie(data.SessionId);
+            data.Content = JsonSerializer.Serialize(SessionData);
             return await sessionDAL.CreateSession(data);
         }
 
