@@ -109,6 +109,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<MyBlog.Middleware.XssTestMiddleware>();
+
 app.UseResponseCaching();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
