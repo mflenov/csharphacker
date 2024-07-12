@@ -28,6 +28,20 @@ namespace MyBlog.Controllers
         {
             return View("js", id);
         }
+
+        [Route("/xssaction")]
+        public IActionResult Xssaction()
+        {
+            return Content("Hello " + 
+                HttpContext.Request.Query["Test"], "text/html");
+        }
+
+        [Route("/xssaction2")]
+        public IActionResult Xssaction2()
+        {
+            var str = System.Security.SecurityElement.Escape(HttpContext.Request.Query["Test"]);
+            return Content("Hello " + str, "text/html");
+        }
     }
 }
 

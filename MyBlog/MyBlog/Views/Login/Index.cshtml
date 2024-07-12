@@ -12,12 +12,12 @@
         <input type="hidden" name="u" value="@Model.U" />
         <p>
             <label>Email</label>
-            <input class="form-input" type="text" name="email" value="@Model.Email" />
+            <input class="form-input" type="text" name="email" value="@Model.Email" autocomplete="off" />
             <div class="error">@Html.ValidationMessageFor(m => m.Email)</div>
         </p>
         <p>
             <label>Пароль</label>
-            <input class="form-input" type="password" name="Password" value="" />
+            <input class="form-input" type="password" name="Password" value="" autocomplete="off" />
             <div class="error">@Html.ValidationMessageFor(m => m.Password)</div>
         </p>
         <p>
