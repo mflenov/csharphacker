@@ -59,12 +59,12 @@ namespace MyBlog.BL.Auth
             }
 
             var data = await this.sessionDAL.GetSession(sessionId);
-            sessionModel = data;
             if (data == null)
             {
                 data = await this.CreateSession();
                 CreateSessionCookie(data.SessionId);
             }
+            sessionModel = data;
 
             if (data.Content != null) {
                 SessionData = JsonSerializer.Deserialize<Dictionary<string, object>>(data.Content) ?? new Dictionary<string, object>();

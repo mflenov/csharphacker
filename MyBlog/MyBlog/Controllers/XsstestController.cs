@@ -39,7 +39,8 @@ namespace MyBlog.Controllers
         [Route("/xssaction2")]
         public IActionResult Xssaction2()
         {
-            var str = System.Security.SecurityElement.Escape(HttpContext.Request.Query["Test"]);
+            //var str = System.Security.SecurityElement.Escape(HttpContext.Request.Query["Test"]);
+            var str = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(HttpContext.Request.Query["Test"].ToString());
             return Content("Hello " + str, "text/html");
         }
     }
