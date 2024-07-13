@@ -19,4 +19,14 @@ public class CspController : Controller
         );
         return View("csp");
     }
+
+    [Route("/csp/headereval1")]
+    public IActionResult Headereval1()
+    {
+        HttpContext.Response.Headers.Append(
+            "Content-Security-Policy", 
+            "default-src 'self' www.flenov.info 'unsafe-eval' 'unsafe-inline'" 
+        );
+        return View("cspeval");
+    }
 }
