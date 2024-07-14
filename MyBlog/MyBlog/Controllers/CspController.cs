@@ -29,4 +29,24 @@ public class CspController : Controller
         );
         return View("cspeval");
     }
+
+    [Route("/csp/headereval2")]
+    public IActionResult Headereval2()
+    {
+        HttpContext.Response.Headers.Append(
+            "Content-Security-Policy-Report-Only", 
+            "default-src 'self'; report-uri /csp/csperrors" 
+        );
+        return View("cspeval");
+    }
+
+    [Route("/csp/csperrors")]
+    public async Task<IActionResult> csperrors() {
+        var report = "";
+
+        using (var reader = new StreamReader(Request.Body))
+            report = await reader.ReadToEndAsync();
+                    
+        return new ContentResult() { Content = report };
+    }
 }
