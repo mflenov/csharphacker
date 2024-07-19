@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyBlog.Models;
 using MyBlog.BL.Blog;
 using MyBlog.BL.Auth;
@@ -32,7 +31,7 @@ namespace MyBlog.Controllers
 
         [HttpPost]
         [Route("/blog/add")]
-        public async Task<IActionResult> AddPostAction(BlogViewModel model)
+        public async Task<IActionResult> AddPostAction([Bind("Title")]BlogViewModel model)
         {
             // Этот код можно отделить от контроллера,
             // но я оставлю здесь 

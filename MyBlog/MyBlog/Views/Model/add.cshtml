@@ -1,0 +1,21 @@
+@model MyBlog.DAL.Models.BlogModel
+
+@{
+    ViewData["Title"] = "Запись на блоге";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Заметка на блоге</h1>
+</div>
+<div class="register-form">
+    <form method="post">
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+        <p>Id пользователя @Model.UserId</p>
+        <p>
+            <label>Заголовок</label>
+            <input class="form-input" type="text" name="title" value="@Model.Title" />
+            <div class="error">@Html.ValidationMessageFor(m => m.Title)</div>
+        </p>
+        <button>Добавить</button>
+    </form>
+</div>
