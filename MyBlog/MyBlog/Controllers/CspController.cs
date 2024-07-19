@@ -49,4 +49,9 @@ public class CspController : Controller
                     
         return new ContentResult() { Content = report };
     }
+
+    [Route("/csp/jspost")]
+    public IActionResult jspost() {
+        return View();
+    }    
 }

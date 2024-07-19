@@ -13,6 +13,14 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        "Loginpolicytest",
+        policy => {
+            policy.WithOrigins("http://localhost:8080");
+        });
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -62,6 +70,7 @@ builder.Services.AddMvc()
 
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
+
 
 /*
 builder.Services.AddSession(options => {
@@ -118,14 +127,17 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseMiddleware<MyBlog.Middleware.XssTestMiddleware>();
 
-app.UseResponseCaching();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+
+app.UseCors();
+
+app.UseResponseCaching();
 app.UseAuthorization();
+app.UseMiddleware<MyBlog.Middleware.XssTestMiddleware>();
 
 //app.UseRateLimiter();
 app.MapDefaultControllerRoute();

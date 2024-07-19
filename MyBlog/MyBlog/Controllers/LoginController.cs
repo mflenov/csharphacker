@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.BL.Auth;
 using MyBlog.Models;
@@ -27,8 +28,9 @@ namespace MyBlog.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost]        
         [Route("/login")]
+        [EnableCors("Loginpolicytest")]
         public async Task<IActionResult> IndexPost(LoginViewModel model)
         {
             ViewBag.YaUrl = YaAuthViewModel.GetAuthUrl(httpContextAccessor);
