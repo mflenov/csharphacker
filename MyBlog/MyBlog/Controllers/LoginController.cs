@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Azure.Core;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.BL.Auth;
 using MyBlog.Models;
@@ -10,16 +8,19 @@ namespace MyBlog.Controllers
     public class LoginController : Controller
     {
         private readonly IAuthentication authentication;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public LoginController(IAuthentication authentication)
+        public LoginController(IAuthentication authentication, IHttpContextAccessor httpContextAccessor)
         {
             this.authentication = authentication;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
         [Route("/login")]
         public IActionResult Index(string u)
         {
+            ViewBag.YaUrl = YaAuthViewModel.GetAuthUrl(httpContextAccessor);
             return View(new LoginViewModel()
             {
                 U = u
@@ -30,6 +31,7 @@ namespace MyBlog.Controllers
         [Route("/login")]
         public async Task<IActionResult> IndexPost(LoginViewModel model)
         {
+            ViewBag.YaUrl = YaAuthViewModel.GetAuthUrl(httpContextAccessor);
             if (ModelState.IsValid)
             {
                 bool isLocked = await authentication.IsAccountLocked(model.Email!);

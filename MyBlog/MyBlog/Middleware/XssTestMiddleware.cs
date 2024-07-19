@@ -15,6 +15,7 @@ public class XssTestMiddleware
         await this.next(context);
 
         string paramvalue = context.Request.Query["xssmiddletest"].FirstOrDefault() ?? "";
+        if (paramvalue != "") {
         await context.Response.WriteAsync(
             $@"
             <div class='dev-performance'>
@@ -22,5 +23,6 @@ public class XssTestMiddleware
             </div>
             "
             );
+        }
     }
 }
