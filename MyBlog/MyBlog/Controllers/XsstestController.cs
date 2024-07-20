@@ -11,6 +11,7 @@ namespace MyBlog.Controllers
     public class XsstestController : Controller
     {
         // GET: /<controller>/
+        [HttpGet]
         [Route("/xsstest")]
         public IActionResult Index(string id)
         {

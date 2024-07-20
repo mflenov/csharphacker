@@ -139,6 +139,21 @@ app.UseResponseCaching();
 app.UseAuthorization();
 app.UseMiddleware<MyBlog.Middleware.XssTestMiddleware>();
 
+/*
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    await next();
+});
+*/
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Frame-Options", "ALLOW-FROM localhost:8080");
+    await next();
+});
+
+
 //app.UseRateLimiter();
 app.MapDefaultControllerRoute();
 
