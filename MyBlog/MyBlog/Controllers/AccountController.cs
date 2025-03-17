@@ -21,9 +21,10 @@ namespace MyBlog.Controllers
 
         [HttpGet]
         [Route("/account/password")]
-        public IActionResult AddAction()
+        public async Task<IActionResult> AddAction()
         {
-            if (!currentUser.IsLoggedIn())
+            bool loggedIn = await currentUser.IsLoggedIn();
+            if (!loggedIn)
                 return Redirect("/Login");
             return View("Password", new PasswordViewModel());
         }
@@ -33,7 +34,8 @@ namespace MyBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPostAction(PasswordViewModel model)
         {
-            if (!currentUser.IsLoggedIn())
+            bool loggedIn = await currentUser.IsLoggedIn();
+            if (!loggedIn)
                 return Redirect("/Login");
 
             if (ModelState.IsValid)
@@ -43,6 +45,13 @@ namespace MyBlog.Controllers
                 return Redirect("/");
             }
             return View("Password", model);
+        }
+
+        [HttpGet]
+        [Route("/account/logout")]
+        public async Task<IActionResult> Logout() {
+            await currentUser.Logout();
+            return Redirect("/");
         }
     }
 }

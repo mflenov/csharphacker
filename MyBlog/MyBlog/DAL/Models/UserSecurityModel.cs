@@ -1,5 +1,4 @@
-﻿using System;
-namespace MyBlog.DAL.Models
+﻿namespace MyBlog.DAL.Models
 {
     public class UserSecurityModel
     {

@@ -12,5 +12,15 @@ namespace MyBlog.Extensions
                 .Replace(">", "&gt;")
                 .Replace("\n", "</p><p>"));
         }
+
+        public static string XssContentTest1(this IHtmlHelper htmlHelper, string str)
+        {
+            return str;
+        }
+
+        public static IHtmlContent XssContentTest2(this IHtmlHelper htmlHelper, string str)
+        {
+            return new HtmlString(str);
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace MyBlog.Controllers
     public class XsstestController : Controller
     {
         // GET: /<controller>/
+        [HttpGet]
         [Route("/xsstest")]
         public IActionResult Index(string id)
         {
@@ -27,6 +28,21 @@ namespace MyBlog.Controllers
         public IActionResult Js(string id)
         {
             return View("js", id);
+        }
+
+        [Route("/xssaction")]
+        public IActionResult Xssaction()
+        {
+            return Content("Hello " + 
+                HttpContext.Request.Query["Test"], "text/html");
+        }
+
+        [Route("/xssaction2")]
+        public IActionResult Xssaction2()
+        {
+            //var str = System.Security.SecurityElement.Escape(HttpContext.Request.Query["Test"]);
+            var str = System.Text.Encodings.Web.HtmlEncoder.Default.Encode(HttpContext.Request.Query["Test"].ToString());
+            return Content("Hello " + str, "text/html");
         }
     }
 }

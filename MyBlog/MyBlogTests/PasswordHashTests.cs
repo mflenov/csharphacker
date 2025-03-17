@@ -20,7 +20,7 @@ public class PasswordHashTests
         string hash = encrypt.HashPassword(password, salt);
         Console.WriteLine(salt +  ": " + hash);
 
-        Assert.AreEqual(encrypt.HashPassword(password, salt), hash);
+        Assert.That(hash, Is.EqualTo(encrypt.HashPassword(password, salt)));
     }
 
     [Test]
@@ -34,7 +34,7 @@ public class PasswordHashTests
         string hash = encrypt.HashPassword(password, salt);
         Console.WriteLine(salt + ": " + hash);
 
-        Assert.AreEqual(encrypt.HashPassword(password, salt), hash);
+        Assert.That(hash, Is.EqualTo(encrypt.HashPassword(password, salt)));
     }
 }
 

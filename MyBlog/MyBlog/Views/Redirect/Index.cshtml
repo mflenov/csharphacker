@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Авторизация";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Редиректы</h1>
+</div>
+<div class="register-form">
+    <p>Примеры с переадресацией</p>
+    <ul>
+        <li><a href="/redirect/toroute">На маршрут</a></li>
+        <li><a href="/redirect/tourlv1?url=https://www.flenov.info">На URL v1: https://www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv2?url=https://www.flenov.info">На URL v2: https://www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv2?url=//www.flenov.info">На URL v2: //www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv3?url=//www.flenov.info">На URL v3: //www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv4?url=https://www.flenov.info">На URL v4: https://www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv4?url=//www.flenov.info">На URL v4: //www.flenov.info</a></li>
+        <li><a href="/redirect/tourlv4?url=/xsstest">На URL v4: /xsstest</a></li>
+    </ul>
+</div>

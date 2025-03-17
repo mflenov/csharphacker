@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MyBlog.BL.Auth;
-using MyBlog.BL.Email;
 using MyBlog.DAL.Interfaces;
 using MyBlog.DAL.Models;
 
@@ -10,16 +8,25 @@ namespace MyBlog.BL.Auth
     {
         private readonly IAuthenticationDAL authenticationDAL;
         private readonly IFailedAttemptDAL failedAttemptDAL;
+
+        // очень плохо держать тут IHttpContextAccessor, его не должно быть в BL уровне
+        // но для простоты кода в книге я оставлю его здесь, а на бусти https://boosty.to/mflenov
+        // у меня есть видео создания электронного магазина и сайта на  .NET и там я сделал 
+        // рефакторинг для и код там лучше. Здесь в коде есть файл WebCookie.cs, который нужно использовать 
+        // вместо прямого доступа к httpContextAccessor
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IEncrypt encrypt;
         private readonly IUserSecurity userSecurity;
         private readonly ISession session;
+        private readonly IUserTokenDAL userTokenDAL;
+
 
         public Authentication(IAuthenticationDAL authenticationDAL,
             IFailedAttemptDAL failedAttemptDAL,
-            IHttpContextAccessor httpContextAccessor,
+            IHttpContextAccessor httpContextAccessor, 
             IEncrypt encrypt,
             ISession session,
+            IUserTokenDAL userTokenDAL,
             IUserSecurity userSecurity)
         {
             this.authenticationDAL = authenticationDAL;
@@ -28,6 +35,7 @@ namespace MyBlog.BL.Auth
             this.encrypt = encrypt;
             this.userSecurity = userSecurity;
             this.session = session;
+            this.userTokenDAL = userTokenDAL;
         }
 
         public async Task<int> CreateUser(UserModel user)
@@ -38,26 +46,35 @@ namespace MyBlog.BL.Auth
 
             int id = await authenticationDAL.CreateUser(user);
             await userSecurity.CreateUserVerification(id, user.Email);
-            this.Login(id, false);
+            await this.Login(id, false);
 
             return id;
         }
 
-        public void Login(int id, bool rememberme)
+        public async Task Login(int userid, bool rememberme)
         {
-            httpContextAccessor?.HttpContext?.Session.SetInt32("userid", id);
-            //опять же это плохо использовать GetAwaiter().GetResult();
-            // но это что-бы сохранить код
-            //this.session.SetUserId(id).GetAwaiter().GetResult();
+            httpContextAccessor?.HttpContext?.Session.SetInt32("userid", userid);
 
             if (rememberme)
             {
+                // запоминаем себя по токену
+                UserTokenModel tokenModel = new UserTokenModel() { 
+                    UserId = userid,
+                    UserTokenId = Guid.NewGuid(),
+                    UserAgent = httpContextAccessor?.HttpContext?.Request.Headers["User-Agent"] ?? ""
+                    };
+                await userTokenDAL.Create(tokenModel);
+
+                // это лучше вынести в отдельный класс
                 CookieOptions options = new CookieOptions();
                 options.Path = "/";
                 options.HttpOnly = true;
                 options.Secure = true;
-                options.Expires = DateTimeOffset.UtcNow.AddDays(30);
-                httpContextAccessor?.HttpContext?.Response.Cookies.Append(General.Constants.RememberMeCookieName, encrypt.Encrypt(id.ToString()), options);
+                options.Expires = DateTimeOffset.UtcNow.AddDays(General.Constants.RememberMeDays);
+                httpContextAccessor?.HttpContext?.Response.Cookies.Append(General.Constants.RememberMeCookieName, ((Guid)tokenModel.UserTokenId!).ToString(), options);
+
+                // Вариант с шифрованием ID аккаунта
+                //httpContextAccessor?.HttpContext?.Response.Cookies.Append(General.Constants.RememberMeCookieName, encrypt.Encrypt(id.ToString()), options);
             }
         }
 
@@ -92,7 +109,7 @@ namespace MyBlog.BL.Auth
             }
             if (user.Password == encrypt.HashPassword(password, user.Salt))
             {
-                this.Login((int)user.UserId!, rememberme);
+                await this.Login((int)user.UserId!, rememberme);
                 return true;
             }
             else

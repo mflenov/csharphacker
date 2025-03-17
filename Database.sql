@@ -101,3 +101,13 @@ GO
 if (not exists(select * from sys.columns where name = 'ImageFile' and object_id = object_id('Blog')))
     alter table Blog add ImageFile varchar(255)
 GO
+
+if (not exists(select * from sys.tables where name = 'UserToken'))
+    create table UserToken (
+        UserTokenId UNIQUEIDENTIFIER primary key,
+        UserId int,
+        Created datetime,
+	    UserAgent varchar(1000) null
+    );
+GO
+

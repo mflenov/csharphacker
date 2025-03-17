@@ -13,6 +13,14 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        "Loginpolicytest",
+        policy => {
+            policy.WithOrigins("http://localhost:8080");
+        });
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -27,12 +35,14 @@ builder.Services.AddSingleton<IFailedAttemptDAL, FailedAttemptDAL>();
 builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
 builder.Services.AddSingleton<IBlog, Blog>();
 builder.Services.AddSingleton<MyBlog.BL.Auth.ISession, MyBlog.BL.Auth.Session>();
+builder.Services.AddSingleton<MyBlog.BL.Auth.IWebCookie, MyBlog.Service.WebCookie>();
 
 builder.Services.AddSingleton<ISessionDAL, SessionDAL>();
 builder.Services.AddSingleton<IEmailQueueDAL, EmailQueueDAL>();
 builder.Services.AddSingleton<IAuthenticationDAL, AdoAuthenticationDAL>();
 builder.Services.AddSingleton<IUserSecurityDAL, UserSecurityDAL>();
 builder.Services.AddSingleton<IBlogDAL, BlogDAL>();
+builder.Services.AddSingleton<IUserTokenDAL, UserTokenDAL>();
 
 
 builder.Services.AddResponseCaching();
@@ -61,6 +71,17 @@ builder.Services.AddMvc()
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 
+
+/*
+builder.Services.AddSession(options => {
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+*/
+
+
+/*
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
@@ -79,8 +100,8 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter("fixed",
     rateLimiter => {
         rateLimiter.Window = TimeSpan.FromSeconds(12);
-        rateLimiter.PermitLimit = 4;
-        rateLimiter.QueueLimit = 2;
+        rateLimiter.PermitLimit = 400;
+        rateLimiter.QueueLimit = 200;
         rateLimiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     })
 );
@@ -88,10 +109,11 @@ builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter("fixed",
 builder.Services.AddRateLimiter(_ => _.AddSlidingWindowLimiter("sliding",
     rateLimiter => {
         rateLimiter.Window = TimeSpan.FromSeconds(12);
-        rateLimiter.PermitLimit = 4;
-        rateLimiter.SegmentsPerWindow = 4;
+        rateLimiter.PermitLimit = 100;
+        rateLimiter.SegmentsPerWindow = 100;
     })
 );
+*/
 
 builder.Services.AddDataProtection();
 
@@ -105,14 +127,34 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseResponseCaching();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
-app.UseAuthorization();
 
-app.UseRateLimiter();
+app.UseCors();
+
+app.UseResponseCaching();
+app.UseAuthorization();
+app.UseMiddleware<MyBlog.Middleware.XssTestMiddleware>();
+
+/*
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    await next();
+});
+*/
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Frame-Options", "ALLOW-FROM localhost:8080");
+    await next();
+});
+
+
+//app.UseRateLimiter();
 app.MapDefaultControllerRoute();
 
 app.Run();

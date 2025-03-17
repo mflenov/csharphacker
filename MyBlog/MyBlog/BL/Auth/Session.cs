@@ -1,7 +1,6 @@
-﻿using System;
-using System.Linq;
-using MyBlog.DAL.Models;
+﻿using MyBlog.DAL.Models;
 using MyBlog.DAL.Interfaces;
+using System.Text.Json;
 
 namespace MyBlog.BL.Auth
 {
@@ -9,6 +8,11 @@ namespace MyBlog.BL.Auth
     {
         private readonly ISessionDAL sessionDAL;
         private readonly IHttpContextAccessor httpContextAccessor;
+
+        private SessionModel? sessionModel = null;
+
+        private Dictionary<string, object> SessionData = new Dictionary<string, object>();
+
 
         public Session(ISessionDAL sessionDAL, IHttpContextAccessor httpContextAccessor)
         {
@@ -40,6 +44,9 @@ namespace MyBlog.BL.Auth
 
         public async Task<SessionModel> GetSession()
         {
+            if (sessionModel != null)
+                return sessionModel;
+
             Guid sessionId;
             var cookie = httpContextAccessor?.HttpContext?.Request?.Cookies.FirstOrDefault(m => m.Key == General.Constants.SessionCookieName);
             if (cookie != null && cookie.Value.Value != null)
@@ -57,6 +64,12 @@ namespace MyBlog.BL.Auth
                 data = await this.CreateSession();
                 CreateSessionCookie(data.SessionId);
             }
+            sessionModel = data;
+
+            if (data.Content != null) {
+                SessionData = JsonSerializer.Deserialize<Dictionary<string, object>>(data.Content) ?? new Dictionary<string, object>();
+            }
+            await this.sessionDAL.Extend(data.SessionId);
             return data;
         }
 
@@ -66,6 +79,7 @@ namespace MyBlog.BL.Auth
             data.UserId = userId;
             data.SessionId = Guid.NewGuid();
             CreateSessionCookie(data.SessionId);
+            data.Content = JsonSerializer.Serialize(SessionData);
             return await sessionDAL.CreateSession(data);
         }
 
@@ -79,6 +93,49 @@ namespace MyBlog.BL.Auth
         {
             var data = await this.GetSession();
             return data.UserId != null;
+        }
+
+        public async Task UpdateSessionData()
+        {
+            if (this.sessionModel != null) {
+                this.sessionModel.Content =  JsonSerializer.Serialize(SessionData);
+                await this.sessionDAL.UpdateSession(this.sessionModel);
+            }
+            else
+                throw new Exception("Сессия не загружена");
+        }
+
+        public void AddValue(string key, object value)
+        {
+            if (SessionData.ContainsKey(key))
+                SessionData[key] = value;
+            else
+                SessionData.Add(key, value);
+        }
+
+        public void RemoveValue(string key)
+        {
+            if (SessionData.ContainsKey(key))
+                SessionData.Remove(key);
+        }
+
+        public object GetValueDef(string key, object defaultValue)
+        {
+            if (SessionData.ContainsKey(key))
+                return SessionData[key];
+            return defaultValue;
+        }
+
+        public void ResetSessionCache()
+        {
+            sessionModel = null;
+        }
+
+        public async Task DeleteSessionId()
+        {
+            await GetSession();
+            if (this.sessionModel != null)
+                await sessionDAL.Delete((Guid)this.sessionModel.SessionId);
         }
     }
 }

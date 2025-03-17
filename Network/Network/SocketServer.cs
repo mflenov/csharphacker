@@ -35,26 +35,26 @@ namespace Network
 
         void AcceptCallback(IAsyncResult result)
         {
-            Socket serverSocket = (Socket)result.AsyncState;
+            Socket? serverSocket = (Socket?)result.AsyncState;
 
             SocketData data = new SocketData();
-            data.ClientConnection = serverSocket.EndAccept(result);
+            data.ClientConnection = serverSocket?.EndAccept(result);
 
-            data.ClientConnection.BeginReceive(data.Buffer, 0,
+            data.ClientConnection?.BeginReceive(data.Buffer, 0,
                      1024, SocketFlags.None,
                      new AsyncCallback(ReadCallback), data);
         }
 
         void ReadCallback(IAsyncResult result)
         {
-            SocketData data = (SocketData)result.AsyncState;
-            int bytes = data.ClientConnection.EndReceive(result);
+            SocketData? data = (SocketData?)result.AsyncState;
+            int bytes = data?.ClientConnection?.EndReceive(result) ?? 0;
 
-            if (bytes > 0)
+            if (bytes > 0 && data?.Buffer != null)
             {
-                string s = Encoding.UTF8.GetString(data.Buffer, 0, bytes);
+                string s = Encoding.UTF8.GetString(data?.Buffer!, 0, bytes);
                 Console.WriteLine(s);
-                data.ClientConnection.Send(
+                data?.ClientConnection?.Send(
                       Encoding.UTF8.GetBytes("Получено: " +
                       s.Length + " символов"));
             }

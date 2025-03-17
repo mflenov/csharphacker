@@ -31,7 +31,7 @@ public class HomeController : Controller
         var httpClient = httpClientFactory.CreateClient();
 
         HomeViewModel model = new HomeViewModel();
-        model.IsLoggedIn = this.user.IsLoggedIn();
+        model.IsLoggedIn = await this.user.IsLoggedIn();
         model.BlogItems = await blog.List(status);
         return View(model);
     }
